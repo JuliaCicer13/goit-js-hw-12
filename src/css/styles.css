@@ -82,7 +82,17 @@ font-weight:500;
    color: aqua;
   background-color: #747bff;
 }
+/* Первый индикатор */
 
+.first-loader {
+  display: flex;
+  position: absolute;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #242424;
+
+}
 /* Индикатор */
 
 .loader {
@@ -97,6 +107,14 @@ font-weight:500;
 /* Основные стили для ссылок и прочее */
 
 body {
+  Width:
+1440px;
+Height:
+1320px;
+Top:
+-396px;
+Left:
+796px;
 margin: 0;
 padding: 0;
 background-color:azure;
@@ -166,7 +184,10 @@ ul {
   
 }
 
+.iziToast {
 
+  z-index: 40000000000000;
+}
 .simple-lightbox {
   z-index:1100;
 }

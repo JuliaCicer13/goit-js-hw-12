@@ -18,6 +18,7 @@ export async function fetchImages (searchValue, page = 1)
         safesearch: true,
         page: page,
         per_page: 20,
+       
         },
 
     }   

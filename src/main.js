@@ -31,6 +31,15 @@ searchButton.type = "submit";
 searchButton.textContent = "Search";
 searchButton.style.marginRight = "10px";
 
+// Индикатор для первой кнопки:
+
+const firstLoader = document.createElement("div");
+firstLoader.textContent = "Loading images, please wait...";
+firstLoader.classList.add("first-loader");
+firstLoader.style.display = "none";
+
+
+searchButton.insertAdjacentElement("beforeend", firstLoader);
 
 // Настройки кнопки "LoadMore":
 loadMoreButton.type = "button";
@@ -39,6 +48,18 @@ loadMoreButton.id = "load-more";
 loadMoreButton.style.display = "none";
 loadMoreButton.classList.add("load-more");
 
+
+
+// Индикатор для второй кнопки!!!
+
+const loader = document.createElement("div");
+loader.textContent = "Loading images, please wait...";
+loader.classList.add("loader");
+loader.style.display = "none";
+
+document.body.appendChild(loadMoreButton);
+
+loadMoreButton.insertAdjacentElement("beforeend", loader);
 
 
 // Добавление єлементов в форму:
@@ -78,13 +99,6 @@ let lightbox = new SimpleLightbox("#gallery a", {
 let page = 1;
 let limit = 15;
 
-// Индикатор перед НТТР запросом!!!
-const loader = document.createElement("div");
-loader.textContent = "Loading images, please wait...";
-loader.classList.add("loader");
-loader.style.display = "none";
-document.body.appendChild(loader);
-
 // Данные для НТТР запроса перед самом запросом:
 
 form.addEventListener("submit", async (event) => {
@@ -94,15 +108,16 @@ form.addEventListener("submit", async (event) => {
   event.preventDefault();  
 
   // Показать индикатор
-  loader.style.display = 'block';
+  firstLoader.style.display = 'block';
 
 
   setTimeout(() => {
 
-    loader.style.display = 'none';
+    gallery.style.display = "block";
 
+    firstLoader.style.display = 'none';
 
-  } , 3000);
+  } , 30000);
   
   const searchValue = input.value.trim();
 
@@ -111,7 +126,7 @@ form.addEventListener("submit", async (event) => {
          title: "Error",
          message: "These fields are empty, please, fill these all!",
        color: "red",})
-       loader.style.display = 'none';
+       firstLoader.style.display = 'none';
        return;
   };
    
@@ -126,7 +141,7 @@ form.addEventListener("submit", async (event) => {
               message: "Sorry, there are no any matching your search query. Please try again!",
               color: "red",
         });
-        loader.style.display = "none";
+        firstLoader.style.display = "none";
       return ; 
        }
 
@@ -143,6 +158,18 @@ form.addEventListener("submit", async (event) => {
      }
 
      lightbox.refresh();
+
+     const newImages = photoList.querySelectorAll("li");
+
+     if (newImages.length > 0) {
+
+   const {height} = 
+      newImages[newImages.length - data.hits.length].getBoundingClientRect();
+            window.scrollBy({
+               top: height * 2,
+              behavior: "smooth"
+                  });
+             }
      
 		} catch(error)  {
 
@@ -150,12 +177,14 @@ form.addEventListener("submit", async (event) => {
 
     } finally {
 
-      loader.style.display = "none";
+      firstLoader.style.display = "none";
     }
 
   });
      
     loadMoreButton.addEventListener ("click", async () => {
+
+      let data;
 
       page += 1;
 
@@ -164,6 +193,15 @@ form.addEventListener("submit", async (event) => {
      loader.style.display = "block";
      loader.textContent = "Loading images, please wait...";
      loadMoreButton.disabled = true;
+
+     setTimeout(() => {
+
+      gallery.style.display = "block";
+      loadMoreButton.disabled = true;
+      loader.style.display = 'none';
+  
+    } , 30000);
+    
 
   
       try {
@@ -176,16 +214,31 @@ form.addEventListener("submit", async (event) => {
 
       lightbox.refresh();
 
-     if (data.totalHits <= page * limit) {
-      loadMoreButton.style.display = "none";
-     }
+      // Высота карточки:
+
+
+
+      // Если мы достигли лимита изображений:
+
+      if (data && data.totalHits <= page * limit) {
+
+           loadMoreButton.style.display = "none";
+             iziToast.show({
+                title: "Error",
+                message: "We're sorry, but you've reached the end of search results.",
+                color:"blue",
+              });
+         }
      
     } catch (error) {
+
        console.error(error); 
+
     } finally {
-      loader.style.display ="none";
-      loadMoreButton.textContent = "Load More";
-      loadMoreButton.disabled = false;
-      }
-   });
+
+    loader.style.display = "none";
+    loadMoreButton.disabled = false;
+  
+   }    
+  });
     
