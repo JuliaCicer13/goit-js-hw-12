@@ -11,9 +11,30 @@
  
 
   <main>
-<div class="gallery" id="gallery"></div>
+    
+    <form class="form">
+      <input 
+          type="text" 
+          name="search" 
+          class="input" 
+          placeholder="Enter search query..."
+      />
+      <button type="submit" class="searchButton">
+          Search
+          <span class="first-loader" style="display: none;">Loading...</span>
+
+      </button>
+
+      <div class="gallery" id="gallery">
 
 
+  
+      </div>
+  </form>
+
+
+
+<div class="loader" id="loader" display: none> Loading images, please wait...</div>
 
   </main>
 

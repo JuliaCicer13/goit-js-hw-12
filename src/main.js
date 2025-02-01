@@ -9,27 +9,15 @@ import { createMarkUp } from "./js/render-functions";
 
 import { fetchImages } from "./js/pixabay-api";
 
-// Создаю форму :
-const form = document.createElement('form');
+
+// Ищим форму по селектору :
+const form = document.querySelector('.form');
 form.classList.add('form');
-// Создаю инпут:
-const input = document.createElement('input');
-// Теперь кнопочки:
-const searchButton = document.createElement("button");
-searchButton.classList.add("searchButton");
+// Ищим инпут:
+const input = document.querySelector('.input');
+// Теперь кнопочки только одна динамичная:
+
 const loadMoreButton = document.createElement("button");
-// Стили для инпута:
-input.classList.add('input');
-input.type = 'text';
-input.name = 'search';
-input.placeholder = 'Enter search query...';
-input.style.marginRight = "10px";
-
-
-// Настройки кнопки поиска :
-searchButton.type = "submit";
-searchButton.textContent = "Search";
-searchButton.style.marginRight = "10px";
 
 // Индикатор для первой кнопки:
 
@@ -39,7 +27,6 @@ firstLoader.classList.add("first-loader");
 firstLoader.style.display = "none";
 
 
-searchButton.insertAdjacentElement("beforeend", firstLoader);
 
 // Настройки кнопки "LoadMore":
 loadMoreButton.type = "button";
@@ -49,40 +36,10 @@ loadMoreButton.style.display = "none";
 loadMoreButton.classList.add("load-more");
 
 
-
-// Индикатор для второй кнопки!!!
-
-const loader = document.createElement("div");
-loader.textContent = "Loading images, please wait...";
-loader.classList.add("loader");
-loader.style.display = "none";
-
 document.body.appendChild(loadMoreButton);
 
-loadMoreButton.insertAdjacentElement("beforeend", loader);
 
-
-// Добавление єлементов в форму:
-form.appendChild(input);
-form.appendChild(searchButton);
-
-
-// Добавляю форму в DOM:
-
-document.body.appendChild(form);
-// Выравниваю элементы по горизонтали
-
-form.style.alignItems = "center";
-form.style.position = "fixed";
-form.style.top = "50px";
-form.style.left = "50%";
-form.style.transform = "translate(-50%, -50%)";
-form.style.justifyContent = "center";
-form.style.gap = "10px"
-
-
-
-// контейнер для галереи:
+// Контейнер для галереи:
 const gallery = document.createElement("div");
 gallery.id = "gallery";
 document.body.appendChild(gallery);
@@ -94,10 +51,11 @@ let lightbox = new SimpleLightbox("#gallery a", {
   captionsData: "alt",
   captionDelay: 250,
 });
+
 // Начальная стадия страниц:
 
 let page = 1;
-let limit = 15;
+let limit = 20;
 
 // Данные для НТТР запроса перед самом запросом:
 
@@ -159,17 +117,6 @@ form.addEventListener("submit", async (event) => {
 
      lightbox.refresh();
 
-     const newImages = photoList.querySelectorAll("li");
-
-     if (newImages.length > 0) {
-
-   const {height} = 
-      newImages[newImages.length - data.hits.length].getBoundingClientRect();
-            window.scrollBy({
-               top: height * 2,
-              behavior: "smooth"
-                  });
-             }
      
 		} catch(error)  {
 
@@ -184,21 +131,19 @@ form.addEventListener("submit", async (event) => {
      
     loadMoreButton.addEventListener ("click", async () => {
 
-      let data;
-
       page += 1;
 
-      // Показать индикатор
-     
-     loader.style.display = "block";
-     loader.textContent = "Loading images, please wait...";
-     loadMoreButton.disabled = true;
+      // Показываем индикатор загрузки
+    const loader = document.querySelector(".loader"); // Используем селектор
+    loader.style.display = "block"; // Показываем индикатор
+    loadMoreButton.disabled = true; // Отключаем кнопку во время загрузки
+
 
      setTimeout(() => {
 
       gallery.style.display = "block";
       loadMoreButton.disabled = true;
-      loader.style.display = 'none';
+   
   
     } , 30000);
     
@@ -214,9 +159,14 @@ form.addEventListener("submit", async (event) => {
 
       lightbox.refresh();
 
-      // Высота карточки:
 
-
+     // Прокручиваем так, чтобы кнопка Load More оставалась в зоне видимости
+        const galleryRect = gallery.getBoundingClientRect();
+        window.scrollBy({
+            top: galleryRect.height / 2, // Прокручиваем на половину высоты галереи
+            behavior: "smooth"
+        });
+        
 
       // Если мы достигли лимита изображений:
 
@@ -236,8 +186,9 @@ form.addEventListener("submit", async (event) => {
 
     } finally {
 
-    loader.style.display = "none";
-    loadMoreButton.disabled = false;
+      // Скрываем индикатор загрузки и разблокируем кнопку
+      loader.style.display = "none"; // Скрываем индикатор
+      loadMoreButton.disabled = false;
   
    }    
   });
