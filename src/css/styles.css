@@ -99,11 +99,10 @@ margin-bottom: 28px;
 
 .loader-container {
   position: fixed;
-  top: 35%; /* Регулируй высоту */
+  top: 35%; 
   left: 50%;
   transform: translate(-50%, -50%);
-  text-align: center; /* Выравнивание текста */
-  z-index: 9999;
+  text-align: center; 
 }
 
 .loader {
@@ -113,7 +112,7 @@ margin-bottom: 28px;
   border-left-color: #3498db;
   border-radius: 50%;
   animation: spin 1s linear infinite;
-  margin: 0 auto; /* Центрируем лоадер */
+  margin: 0 auto; 
 }
 
 /* Основные стили для ссылок и прочее */
