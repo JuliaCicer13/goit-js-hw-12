@@ -19,14 +19,6 @@ const input = document.querySelector('.input');
 
 const loadMoreButton = document.createElement("button");
 
-// Индикатор для первой кнопки:
-
-const firstLoader = document.createElement("div");
-firstLoader.textContent = "Loading images, please wait...";
-firstLoader.classList.add("first-loader");
-firstLoader.style.display = "none";
-
-
 
 // Настройки кнопки "LoadMore":
 loadMoreButton.type = "button";
@@ -45,6 +37,9 @@ gallery.id = "gallery";
 document.body.appendChild(gallery);
 const photoList = document.createElement('ul');
 
+const loader = document.querySelector(".loader");
+loader.style.display = "none";
+
 
 // Настройка lightbox:
 let lightbox = new SimpleLightbox("#gallery a", {
@@ -61,22 +56,16 @@ let limit = 20;
 
 form.addEventListener("submit", async (event) => {
 
-  loadMoreButton.style.display = "none"
+  event.preventDefault(); 
 
-  event.preventDefault();  
+  loader.style.display = "block";
 
-  // Показать индикатор
-  firstLoader.style.display = 'block';
+  gallery.innerHTML = '';
 
+  photoList.innerHTML = '';
 
-  setTimeout(() => {
+ loadMoreButton.style.display = "none"
 
-    gallery.style.display = "block";
-
-    firstLoader.style.display = 'none';
-
-  } , 30000);
-  
   const searchValue = input.value.trim();
 
      if (!searchValue) {
@@ -84,7 +73,9 @@ form.addEventListener("submit", async (event) => {
          title: "Error",
          message: "These fields are empty, please, fill these all!",
        color: "red",})
-       firstLoader.style.display = 'none';
+
+       loader.style.display = 'none';
+
        return;
   };
    
@@ -99,13 +90,14 @@ form.addEventListener("submit", async (event) => {
               message: "Sorry, there are no any matching your search query. Please try again!",
               color: "red",
         });
-        firstLoader.style.display = "none";
+       loader.style.display = "none";
       return ; 
        }
 
-     gallery.innerHTML = ''; 
+
      photoList.insertAdjacentHTML("beforeend", createMarkUp(data.hits));
      gallery.append(photoList);
+     lightbox.refresh();
   
 
      if (data.totalHits > page * limit) {
@@ -114,40 +106,26 @@ form.addEventListener("submit", async (event) => {
        gallery.insertAdjacentElement("afterend", loadMoreButton);
 
      }
-
-     lightbox.refresh();
-
      
 		} catch(error)  {
 
       console.error(error);
 
     } finally {
-
-      firstLoader.style.display = "none";
+     
+        setTimeout(() => {
+          loader.style.display = "none"; 
+        }, 1000); 
+      
     }
-
   });
      
     loadMoreButton.addEventListener ("click", async () => {
 
-      page += 1;
-
       // Показываем индикатор загрузки
-    const loader = document.querySelector(".loader"); // Используем селектор
     loader.style.display = "block"; // Показываем индикатор
     loadMoreButton.disabled = true; // Отключаем кнопку во время загрузки
-
-
-     setTimeout(() => {
-
-      gallery.style.display = "block";
-      loadMoreButton.disabled = true;
-   
-  
-    } , 30000);
-    
-
+    page += 1;
   
       try {
 
@@ -186,8 +164,10 @@ form.addEventListener("submit", async (event) => {
 
     } finally {
 
-      // Скрываем индикатор загрузки и разблокируем кнопку
-      loader.style.display = "none"; // Скрываем индикатор
+      setTimeout(() => {
+        loader.style.display = "none"; 
+      }, 1000); 
+      
       loadMoreButton.disabled = false;
   
    }    

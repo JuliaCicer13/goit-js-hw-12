@@ -92,26 +92,30 @@ margin-bottom: 28px;
   color: aqua;
   background-color: #747bff;
 }
-/* Первый индикатор */
 
-.first-loader {
-  display: flex;
-  position: absolute;
-  top: 70px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: #242424;
 
-}
 /* Индикатор */
 
-.loader {
-  display: none;
-  top: 70px;
-  left: 50%;
-  color: #242424;
 
+.loader-container {
+  position: fixed;
+  top: 35%; /* Регулируй высоту */
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center; /* Выравнивание текста */
+  z-index: 9999;
 }
+
+.loader {
+  width: 80px;
+  height: 80px;
+  border: 8px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto; /* Центрируем лоадер */
+}
+
 /* Основные стили для ссылок и прочее */
 
 body {
